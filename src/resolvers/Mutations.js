@@ -1,6 +1,5 @@
-import { v4 as uuid } from "uuid";
-
 export const Mutation = {
+  // USER MUTATIONS
   createUser(parent, args, { prisma }, info) {
     return prisma.mutation.createUser({ data: args.data }, info);
   },
@@ -14,46 +13,43 @@ export const Mutation = {
     return prisma.mutation.deleteUser({ where: { id: args.id } }, info);
   },
 
-  createPost(parent, args, { db, pubSub }) {
-    const isValidID = db.users.some(user => user.id === args.data.author);
-
-    if (!isValidID) {
-      throw new Error("User not found");
-    }
-
-    const post = {
-      id: uuid(),
-      ...args.data
-    };
-
-    db.posts.push(post);
-    pubSub.publish(`post-${args.data.author}`, {
-      post: {
-        mutation: "CREATED",
-        data: post
-      }
-    });
-
-    return post;
-  },
-  createComment(parent, args, { db, pubSub }) {
-    const userExist = db.users.some(user => user.id === args.data.author);
-    const postExist = db.posts.some(
-      post => post.id === args.data.post && post.published
+  // POST MUTATIONS
+  createPost(parent, args, { prisma }, info) {
+    return prisma.mutation.createPost(
+      { data: { ...args.data, author: { connect: { id: args.data.author } } } },
+      info
     );
+  },
+  updatePost(parent, args, { prisma }, info) {
+    return prisma.mutation.updatePost(
+      { data: args.data, where: { id: args.id } },
+      info
+    );
+  },
+  deletePost(parent, args, { prisma }, info) {
+    return prisma.mutation.deletePost({ where: { id: args.id } }, info);
+  },
 
-    if (!userExist || !postExist) {
-      throw new Error("Unable to find user / post");
-    }
-
-    const comment = {
-      id: uuid(),
-      ...args.data
-    };
-
-    db.comments.push(comment);
-
-    pubSub.publish(`comment-${args.data.post}`, { comment });
-    return comment;
+  // COMMENT MUTATIONS
+  createComment(parent, args, { prisma }, info) {
+    return prisma.mutation.createComment(
+      {
+        data: {
+          ...args.data,
+          author: { connect: { id: args.data.author } },
+          post: { connect: { id: args.data.post } }
+        }
+      },
+      info
+    );
+  },
+  updateComment(parent, args, { prisma }, info) {
+    return prisma.mutation.updateComment(
+      { data: { text: args.data.text }, where: { id: args.id } },
+      info
+    );
+  },
+  deleteComment(parent, args, { prisma }, info) {
+    return prisma.mutation.deleteComment({ where: { id: args.id } }, info);
   }
 };
