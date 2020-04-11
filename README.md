@@ -1,16 +1,16 @@
-# prisma-graphql
+## prisma-graphql
 GraphQL playground with Prisma and PostgreSQL
 
 
-# Get schema
+#### Get schema
 ```yarn get-schema```
 
-# compose docker
+#### compose docker
 ```cd prisma```
 
 ```docker-compose up -d```
 
-# deploy prisma
+#### deploy prisma
 ```cd prisma```
 
 ```prisma deploy```
