@@ -1,14 +1,48 @@
+type User {
+  id: ID!
+  name: String!
+  email: String
+  password: String
+  posts: [Post!]!
+  comments: [Comment]!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  body: String!
+  published: Boolean!
+  author: User!
+  comments: [Comment!]!
+}
+
+type Comment {
+  id: ID!
+  text: String!
+  post: Post!
+  author: User!
+}
+
 type Query {
   me: User!
   users(query: String): [User!]!
   posts(query: String): [Post!]!
   comments: [Comment!]!
+  post(id: ID!): Post!
+  myPosts(query: String): [Post!]!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
 }
 
 type Mutation {
-  createUser(data: CreateUserInput): User!
-  updateUser(id: ID!, data: UpdateUserInput): User!
-  deleteUser(id: ID!): User!
+  createUser(data: CreateUserInput): AuthPayload!
+  login(data: LoginInput): AuthPayload!
+  updateUser(data: UpdateUserInput): User!
+  deleteUser: User!
   createPost(data: CreatePostInput): Post!
   updatePost(id: ID!, data: UpdatePostInput): Post!
   deletePost(id: ID!): Post!
@@ -17,15 +51,15 @@ type Mutation {
   deleteComment(id: ID!): Comment!
 }
 
-type Subscription {
-  comment(postId: ID!): CommentSubPayload!
-  post(userId: ID!): PostSubPayload!
-  postByPublish(published: Boolean!): PostSubPayload!
-}
-
 input CreateUserInput {
   name: String!
   email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 input UpdateUserInput {
@@ -37,7 +71,6 @@ input CreatePostInput {
   title: String!
   body: String!
   published: Boolean!
-  author: ID!
 }
 
 input UpdatePostInput {
@@ -48,7 +81,6 @@ input UpdatePostInput {
 
 input CreateCommentInput {
   text: String!
-  author: ID!
   post: ID!
 }
 
@@ -56,34 +88,10 @@ input UpdateCommentInput {
   text: String
 }
 
-type User {
-  id: ID!
-  name: String!
-  email: String!
-  posts: [Post!]!
-  comments: [Comment]
-}
-
-type Post {
-  id: ID!
-  title: String!
-  body: String!
-  published: Boolean!
-  author: User!
-  comments: [Comment]
-}
-
-enum MutationType {
-  CREATED
-  UPDATED
-  DELETED
-}
-
-type Comment {
-  id: ID!
-  text: String!
-  post: Post!
-  author: User!
+type Subscription {
+  comment(postId: ID!): CommentSubPayload!
+  post(userId: ID!): PostSubPayload!
+  postByPublish(published: Boolean!): PostSubPayload!
 }
 
 type PostSubPayload {
@@ -94,4 +102,9 @@ type PostSubPayload {
 type CommentSubPayload {
   mutation: MutationType!
   node: Comment!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
 }
