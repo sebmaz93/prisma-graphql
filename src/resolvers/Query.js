@@ -5,7 +5,8 @@ export const Query = {
     const opArgs = {
       first: args.first,
       skip: args.skip,
-      after: args.after
+      after: args.after,
+      orderBy: args.orderBy
     };
 
     if (args.query) {
@@ -21,7 +22,8 @@ export const Query = {
       where: { published: true },
       first: args.first,
       skip: args.skip,
-      after: args.after
+      after: args.after,
+      orderBy: args.orderBy
     };
 
     if (args.query) {
@@ -53,7 +55,8 @@ export const Query = {
     const opArgs = {
       first: args.first,
       skip: args.skip,
-      after: args.after
+      after: args.after,
+      orderBy: args.orderBy
     };
 
     return prisma.query.comments(opArgs, info);
@@ -71,7 +74,8 @@ export const Query = {
       where: { author: { id: userId } },
       first: args.first,
       skip: args.skip,
-      after: args.after
+      after: args.after,
+      orderBy: args.orderBy
     };
 
     if (args.query) {
