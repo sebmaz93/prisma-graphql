@@ -10,6 +10,8 @@
 
 # production
 /build
+/dist
+/config
 
 # misc
 .idea
@@ -24,4 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+dev.env
+prod.env
 *.env

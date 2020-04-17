@@ -1,4 +1,4 @@
-# import UserOrderByInput, PostOrderByInput, CommentOrderByInput from './generated/prisma.graphql
+# import UserOrderByInput, PostOrderByInput, CommentOrderByInput from './generated/prisma.graphql'
 
 type User {
   id: ID!
